@@ -11,6 +11,9 @@ case class Vector2(x: Float, y: Float):
     def *(f :Float) : Vector2 =
         Vector2(x * f, y * f)
     
+    def *:(f :Float) : Vector2 =
+        Vector2(x * f, y * f)
+    
     def /(f :Float) : Vector2 =
         Vector2(x / f, y / f)
     
