@@ -1,5 +1,9 @@
 package utilities
 
+/**Class that has two points
+ * 
+ * Most methods are intended to be uses as operators
+*/
 case class Vector2(x: Double, y: Double):
 
     /**retunrns sum of two vectors as Vector2*/
