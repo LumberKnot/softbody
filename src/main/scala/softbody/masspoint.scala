@@ -1,12 +1,13 @@
 package softbody
 
-import va.*
+import utilities.*
 
 object Masspoint:
-    val mass = 1
+    val g = 0.5
 
     
-class Masspoint(var startPos :Vector2) extends movable:
+class Masspoint(var startPos : Vector2) extends drawObject:
+    import Masspoint.*
         
     override def toString =
         s"Masspoint at (${pos.x},${pos.y})"
@@ -18,15 +19,14 @@ class Masspoint(var startPos :Vector2) extends movable:
     override def draw : Unit = ???
 
     override def erase : Unit = ???
-
-    override def update : Unit = ???
-
-    override def reset : Unit = ???
-
+        
+    /**updade velocity and then position*/
     def move : Unit =
-        //updade velocity and then position
         velocity = velocity + force
         pos = pos + velocity
+
+    def gravity : Unit =
+        addForce(Vector2(0,-g))
     
     def addForce(_force : Vector2) : Unit =
         force = force + _force

@@ -1,4 +1,4 @@
-package va
+package utilities
 
 /**Class that has two points
  * 

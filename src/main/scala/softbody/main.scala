@@ -1,3 +1,4 @@
+package softbody
 
 @main
 def run : Unit =

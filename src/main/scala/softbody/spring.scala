@@ -1,6 +1,6 @@
 package softbody
 
-import va.Vector2
+import utilities.Vector2
 
 object spring:
     def apply(atached : Vector[Masspoint]) =
@@ -8,14 +8,12 @@ object spring:
     
     val k = 0.01 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
 
-class spring(val atached: Vector[Masspoint]) extends movable:
+class spring(val atached: Vector[Masspoint]) extends drawObject:
     import spring.*
 
     override def draw : Unit = ???
 
     override def erase : Unit = ???
-
-    override def reset : Unit = ???
 
     //Startlängd bestämmer hur den ska bete sig i framtiden
     val untensionedLength = getLenght
@@ -27,7 +25,7 @@ class spring(val atached: Vector[Masspoint]) extends movable:
         s"Spring between ${atached(0)} , ${atached(1)} with length $untensionedLength"
 
     /**Aplies force to both maspoints*/
-    override def update : Unit =
+    def applyForce : Unit =
         //F = k * delta_legnth
         val deltaL = (getLenght - untensionedLength)
 
