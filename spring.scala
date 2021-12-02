@@ -8,28 +8,36 @@ object spring:
     
     val k = 0.01 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
 
-class spring(val atached: Vector[Masspoint]):
+class spring(val atached: Vector[Masspoint]) extends movable:
     import spring.*
 
+    override def draw : Unit = ???
+
+    override def erase : Unit = ???
+
+    override def reset : Unit = ???
+
     //Startlängd bestämmer hur den ska bete sig i framtiden
-    val length = getLenght
+    val untensionedLength = getLenght
 
     def getLenght : Double =
-        (atached(0).pos - atached(1).pos).length
+        (atached(0).pos -> atached(1).pos).length
 
     override def toString =
-        s"Spring between ${atached(0)} , ${atached(1)} with length $length"
+        s"Spring between ${atached(0)} , ${atached(1)} with length $untensionedLength"
 
-    def applyForce : Unit =
+    /**Aplies force to both maspoints*/
+    override def update : Unit =
         //F = k * delta_legnth
-        val deltaL = (getLenght - length)
+        val deltaL = (getLenght - untensionedLength)
 
         //gör samma för båda punkterna
-        for (id <- 0 to 1) do
-            val vec = atached(id).pos -> atached((id+1)%2).pos //få en vektor i rätt riktning
+        for (masspoint <- atached) do
+
+            val directionalVector = masspoint.pos -> atached.filterNot(_ == masspoint)(0).pos //få en vektor i rätt riktning
 
             //omvandlar vektorn till en med storlek 1 och sedan multiplicerar med k * deltaL
-            atached(id).addForce((vec/ vec.length.toFloat) * (k*deltaL).toFloat) 
+            masspoint.addForce(directionalVector.normalized* (k * deltaL))
 
         
     
