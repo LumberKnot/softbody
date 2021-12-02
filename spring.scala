@@ -1,6 +1,6 @@
 package softbody
 
-import utilities.Vector2
+import va.Vector2
 
 object spring:
     def apply(atached : Vector[Masspoint]) =

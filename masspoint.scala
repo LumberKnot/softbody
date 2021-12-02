@@ -1,6 +1,6 @@
 package softbody
 
-import utilities.*
+import va.*
 
 object Masspoint:
     val mass = 1
