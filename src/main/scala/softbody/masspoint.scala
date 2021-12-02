@@ -36,5 +36,16 @@ class Masspoint(var startPos : Vector2) extends drawObject:
 
     def clearVelocity : Unit =
         velocity = Vector2(0,0)
+    
+
+    
+/*Ordning
+clear force
+gravity
+springs.addForce
+move
+Coliders?
+*/
+
 
 

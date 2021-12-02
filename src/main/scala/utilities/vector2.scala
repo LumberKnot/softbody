@@ -36,6 +36,10 @@ case class Vector2(x: Double, y: Double):
     /**The length of the vector*/
     lazy val length : Double = 
         math.sqrt(x*x + y*y)
+
+    /**The length of the vector squared*/
+    lazy val lengthSquared : Double = 
+        (x*x + y*y)
     
     /**A vector in the same direction with lenght 1*/
     lazy val normalized : Vector2 =
