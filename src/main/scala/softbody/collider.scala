@@ -14,9 +14,7 @@ class Collider(corners : (Vector2,Vector2)) extends drawObject:
         corners._1.y max corners._2.y)
 
     override def draw : Unit = ???
-
-    override def erase : Unit = ???
-
+    
     lazy val midPoint  : Vector2 = corners._1 + ((corners._1 -> corners._2)/2)
     lazy val maxLengthSquared : Double  = ((corners._1 -> corners._2)/2).length * ((corners._1 -> corners._2)/2).length 
 
@@ -26,3 +24,24 @@ class Collider(corners : (Vector2,Vector2)) extends drawObject:
     
     def isIn(point : Vector2) : Boolean =
         (bounds(0) <= point.x && bounds(1) <= point.y && bounds(2) >= point.x && bounds(3) >= point.y)
+    
+    
+    /**Corrects any masspoints that have entered the collider
+     * 
+     * currently only in y
+    */
+    def collide(point : Masspoint) : Unit =
+        if isIn(point.pos) then
+            //above
+            if point.pos.y > midPoint.y then
+                point.clearVerticalVelocity
+                point.setPos(Vector2(point.pos.x,bounds(3)))
+            //Below add if when x becomes relevant
+            else
+                point.clearVerticalVelocity
+                point.setPos(Vector2(point.pos.x , bounds(1)))
+                
+
+
+
+

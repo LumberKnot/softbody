@@ -13,8 +13,6 @@ class spring(val atached: Vector[Masspoint]) extends drawObject:
 
     override def draw : Unit = ???
 
-    override def erase : Unit = ???
-
     //Startlängd bestämmer hur den ska bete sig i framtiden
     val untensionedLength = getLenght
 

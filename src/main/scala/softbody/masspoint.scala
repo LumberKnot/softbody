@@ -17,9 +17,7 @@ class Masspoint(var startPos : Vector2) extends drawObject:
     var pos      : Vector2 = startPos
 
     override def draw : Unit = ???
-
-    override def erase : Unit = ???
-        
+            
     /**updade velocity and then position*/
     def move : Unit =
         velocity = velocity + force
@@ -36,6 +34,16 @@ class Masspoint(var startPos : Vector2) extends drawObject:
 
     def clearVelocity : Unit =
         velocity = Vector2(0,0)
+    
+    def clearVerticalVelocity : Unit = 
+        velocity = Vector2(velocity.x,0)
+    
+    def clearHorizontalVelocity : Unit =
+        velocity = Vector2(0,velocity.y)
+    
+    def setPos(_pos : Vector2) =
+        pos = _pos
+
     
 
     
