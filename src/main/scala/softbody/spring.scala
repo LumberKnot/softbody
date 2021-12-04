@@ -4,12 +4,12 @@ import utilities.Vector2
 
 object Spring:
     def apply(atached : Vector[Masspoint]) =
-        if (atached.length == 2) then println("works");new spring(atached)
+        if (atached.length == 2) then println("works");new Spring(atached)
     
     val k = 0.01 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
 
 class Spring(val atached: Vector[Masspoint]) extends drawObject:
-    import spring.*
+    import Spring.*
 
     override def draw : Unit = ???
 

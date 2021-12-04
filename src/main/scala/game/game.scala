@@ -1,7 +1,7 @@
 package game
 import softbody.*
 
-class Game(dim : (Int,Int),
+class Game(dim : (Int,Int) = (800,500),
 masspoints : Vector[Masspoint], 
 springs : Vector[Spring],
 colliders : Vector[Collider],
