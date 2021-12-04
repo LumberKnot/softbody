@@ -2,13 +2,13 @@ package softbody
 
 import utilities.Vector2
 
-object spring:
+object Spring:
     def apply(atached : Vector[Masspoint]) =
         if (atached.length == 2) then println("works");new spring(atached)
     
     val k = 0.01 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
 
-class spring(val atached: Vector[Masspoint]) extends drawObject:
+class Spring(val atached: Vector[Masspoint]) extends drawObject:
     import spring.*
 
     override def draw : Unit = ???

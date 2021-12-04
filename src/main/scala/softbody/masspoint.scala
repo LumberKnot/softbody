@@ -46,14 +46,6 @@ class Masspoint(var startPos : Vector2) extends drawObject:
 
     
 
-    
-/*Ordning
-clear force
-gravity
-springs.addForce
-move
-Coliders?
-*/
 
 
 
