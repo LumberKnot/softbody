@@ -2,9 +2,19 @@ package softbody
 
 
 import utilities.Vector2
+import game.Engine
+
+/**Companionsobj*/
+object Collider:
+    val edgeColor = java.awt.Color(0,51,0)
+    val fillColor = java.awt.Color(0,255,0)
+
+    def apply(corners : (Vector2,Vector2))(using engine : Engine) =
+        new Collider(corners)(engine)
 
 /**Inmutable tuple of positions*/
-class Collider(corners : (Vector2,Vector2)) extends drawObject:
+class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
+    import Collider.*
 
     /**x_min, y_min, x_max,  y_max */
     lazy val bounds : Vector[Double] = Vector(
@@ -13,7 +23,8 @@ class Collider(corners : (Vector2,Vector2)) extends drawObject:
         corners._1.x max corners._2.x,
         corners._1.y max corners._2.y)
 
-    override def draw : Unit = ???
+    override def draw : Unit = 
+        engine.drawBoxWithEdges(corners._1 , corners._2 ,edgeColor, fillColor)
     
     lazy val midPoint  : Vector2 = corners._1 + ((corners._1 -> corners._2)/2)
     lazy val maxLengthSquared : Double  = ((corners._1 -> corners._2)/2).length * ((corners._1 -> corners._2)/2).length 

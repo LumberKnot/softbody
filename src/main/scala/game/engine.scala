@@ -1,6 +1,7 @@
 package game
 
 import java.awt.Color
+import utilities.Vector2
 
 abstract class Engine(
   val title: String = "Softbody",
@@ -61,7 +62,6 @@ abstract class Engine(
   protected val MaxWaitForEventMillis = 1
 
   /** The game loop that continues while not `stopWhen` is true.
-    * It draws only updated blocks aiming at the desired frame rate.
     * It calls each `onXXX` method if a corresponding event is detected.
     */
   protected def gameLoop(stopWhen: => Boolean): Unit = while !stopWhen do
@@ -84,3 +84,34 @@ abstract class Engine(
     if (gameLoopDelayMillis - elapsed) < MaxWaitForEventMillis then
       onFrameTimeOverrun(elapsed)
     Thread.sleep((gameLoopDelayMillis - elapsed) max 0)
+
+
+
+    /**Draws pixelwindow.line with Vector2s*/
+  def drawLine(a: Vector2, b : Vector2, color : Color) : Unit =
+    pixelWindow.line(a.x.toInt ,a.y.toInt ,b.x.toInt , b.y.toInt , color)
+  
+  def drawBoxWithEdges(a : Vector2, b : Vector2 , edgeColor : java.awt.Color, fillColor : java.awt.Color) : Unit =
+    
+    pixelWindow.fill(
+      (a.x min b.x).toInt,
+      (a.y min b.y).toInt,
+      width = math.abs(a.x - b.x).toInt,
+      height = math.abs(a.y - b.y).toInt,
+      color = fillColor
+    )
+
+    pixelWindow.line(a.x.toInt , a.y.toInt , b.x.toInt , a.y.toInt , edgeColor,5)
+    pixelWindow.line(a.x.toInt , a.y.toInt , a.x.toInt , b.y.toInt , edgeColor,5)
+
+    pixelWindow.line(b.x.toInt , b.y.toInt , b.x.toInt , a.y.toInt , edgeColor,5)
+    pixelWindow.line(b.x.toInt , b.y.toInt , a.x.toInt , b.y.toInt , edgeColor,5)
+
+
+  
+  /**Draws a square atm
+   * 
+   * might try to fix l8ter
+  */
+  def drawDot(pos : Vector2 , color : java.awt.Color, size : Int = 10) =
+    pixelWindow.fill((pos.x - size/2).toInt , (pos.y -size/2).toInt , size , size , color)

@@ -1,17 +1,21 @@
 package softbody
 
 import utilities.Vector2
+import game.Engine
 
 object Spring:
-    def apply(atached : Vector[Masspoint]) =
-        if (atached.length == 2) then println("works");new Spring(atached)
+    val lineColor : java.awt.Color = java.awt.Color.red
+
+    def apply(atached : Vector[Masspoint])(using ctx : Engine)  =
+        if (atached.length == 2) then println("works");new Spring(atached)(ctx)
     
     val k = 0.01 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
 
-class Spring(val atached: Vector[Masspoint]) extends drawObject:
+class Spring(val atached: Vector[Masspoint])(engine : Engine )extends drawObject:
     import Spring.*
 
-    override def draw : Unit = ???
+    override def draw : Unit = 
+        engine.drawLine(atached(0).pos , atached(1).pos , lineColor)
 
     //Startlängd bestämmer hur den ska bete sig i framtiden
     val untensionedLength = getLenght

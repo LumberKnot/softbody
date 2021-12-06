@@ -1,12 +1,17 @@
 package softbody
 
 import utilities.*
+import game.Engine
 
 object Masspoint:
     val g = 0.5
+    val color = java.awt.Color(153, 51, 51)
+
+    def apply(startPos : Vector2)(using engine : Engine) : Masspoint = 
+        new Masspoint(startPos)(engine)
 
     
-class Masspoint(var startPos : Vector2) extends drawObject:
+class Masspoint(val startPos : Vector2)(engine : Engine) extends drawObject:
     import Masspoint.*
         
     override def toString =
@@ -16,7 +21,8 @@ class Masspoint(var startPos : Vector2) extends drawObject:
     var velocity : Vector2 = Vector2(0,0)
     var pos      : Vector2 = startPos
 
-    override def draw : Unit = ???
+    override def draw : Unit = 
+        engine.drawDot(pos,color,10)
             
     /**updade velocity and then position*/
     def move : Unit =
