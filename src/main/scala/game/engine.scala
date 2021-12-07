@@ -64,26 +64,27 @@ abstract class Engine(
   /** The game loop that continues while not `stopWhen` is true.
     * It calls each `onXXX` method if a corresponding event is detected.
     */
-  protected def gameLoop(stopWhen: => Boolean): Unit = while !stopWhen do
-    import PixelWindow.Event
-    val t0 = System.currentTimeMillis
-    pixelWindow.awaitEvent(MaxWaitForEventMillis.toLong)
-    while pixelWindow.lastEventType != PixelWindow.Event.Undefined do
-      pixelWindow.lastEventType match
-        case Event.KeyPressed    => onKeyDown(pixelWindow.lastKey)
-        case Event.KeyReleased   => onKeyUp(pixelWindow.lastKey)
-        case Event.WindowClosed  => onClose()
-        case Event.MousePressed  => onMouseDown(pixelWindow.lastMousePos)
-        case Event.MouseReleased => onMouseUp(pixelWindow.lastMousePos)
-        case _ =>
-      pixelWindow.awaitEvent(1)
-    pixelWindow.clear()
-    draw()
-    gameLoopAction()
-    val elapsed = System.currentTimeMillis - t0
-    if (gameLoopDelayMillis - elapsed) < MaxWaitForEventMillis then
-      onFrameTimeOverrun(elapsed)
-    Thread.sleep((gameLoopDelayMillis - elapsed) max 0)
+  protected def gameLoop(stopWhen: => Boolean): Unit = 
+    while !stopWhen do
+      import PixelWindow.Event
+      val t0 = System.currentTimeMillis
+      pixelWindow.awaitEvent(MaxWaitForEventMillis.toLong)
+      while pixelWindow.lastEventType != PixelWindow.Event.Undefined do
+        pixelWindow.lastEventType match
+          case Event.KeyPressed    => onKeyDown(pixelWindow.lastKey)
+          case Event.KeyReleased   => onKeyUp(pixelWindow.lastKey)
+          case Event.WindowClosed  => onClose()
+          case Event.MousePressed  => onMouseDown(pixelWindow.lastMousePos)
+          case Event.MouseReleased => onMouseUp(pixelWindow.lastMousePos)
+          case _ =>
+        pixelWindow.awaitEvent(1)
+      pixelWindow.clear()
+      draw()
+      gameLoopAction()
+      val elapsed = System.currentTimeMillis - t0
+      if (gameLoopDelayMillis - elapsed) < MaxWaitForEventMillis then
+        onFrameTimeOverrun(elapsed)
+      Thread.sleep((gameLoopDelayMillis - elapsed) max 0)
 
 
 
