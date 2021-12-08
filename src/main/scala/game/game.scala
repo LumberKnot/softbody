@@ -5,7 +5,7 @@ import utilities.Vector2
 
 object Game:
 
-    val optimalSpringLength : Double = 15
+    val optimalSpringLength : Double = 25
 
     enum State:
         case Drawing, Simulating, Quitting
@@ -74,11 +74,47 @@ class Game(dim : (Int,Int) = (800,500)
                 mode match
                     case SoftbodyDrawing => 
                         print("oh boy")
+                        createSoftbody(firstPoint , vectorPos)
 
 
                     case ColliderDrawing => 
                         colliders = colliders :+ Collider(firstPoint , vectorPos)
                         firstPointSelected =false
+
+
+    /**Generates a softbody if and only if there exists none*/
+    def createSoftbody(first : Vector2 , second : Vector2) : Unit = 
+        //rita ett nät på papper
+
+        /**x_min, y_min, x_max,  y_max */
+        val bounds : Vector[Double] = Vector(
+            first.x min second.x,
+            first.y min second.y,
+            first.x max second.x,
+            first.y max second.y)
+        
+        val start : Vector2 = Vector2(bounds(0), bounds(1))
+        val end : Vector2 = Vector2(bounds(2), bounds(3))
+        
+        val cols : Int = ((bounds(2) - bounds(0))/optimalSpringLength).round.toInt
+        val rows : Int = ((bounds(3) - bounds(1))/optimalSpringLength).round.toInt
+
+        val horizontalChange : Vector2 = Vector2((bounds(2) - bounds(0))/cols,0)
+        val verticalChange   : Vector2 = Vector2(0,(bounds(3) - bounds(1))/rows)
+
+        for (id <- 0 to (rows*cols)-1) do
+            //lägger till en masspoint
+            masspoints = masspoints :+ Masspoint(first 
+            + (id % cols) *: horizontalChange + math.floor(id/cols) *: verticalChange
+            )
+
+            //lägger till sido fjädrar
+            if (id % cols != 0) then
+                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id-1)))
+            
+            //lägger till uppåtfjädrar
+            if (id >= cols) then
+                springs = springs :+ Spring(Vector(masspoints(0), masspoints(id- cols)))
 
 
     def enterDrawingState() : Unit =
@@ -102,7 +138,9 @@ class Game(dim : (Int,Int) = (800,500)
     
     def deleteLast : Unit =
         mode match
-            case SoftbodyDrawing => ???
+            case SoftbodyDrawing => 
+                masspoints = Vector()
+                springs    = Vector()
                 
             case ColliderDrawing =>
                 if colliders.nonEmpty then
