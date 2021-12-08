@@ -4,7 +4,7 @@ import utilities.*
 import game.Engine
 
 object Masspoint:
-    val g = 0.5
+    val g = 0.1
     val color = java.awt.Color(153, 51, 51)
 
     def apply(startPos : Vector2)(using engine : Engine) : Masspoint = 
@@ -16,6 +16,9 @@ class Masspoint(val startPos : Vector2)(engine : Engine) extends drawObject:
         
     override def toString =
         s"Masspoint at (${pos.x},${pos.y})"
+
+    override def debug : Unit =
+        println(toString)
 
     var force    : Vector2 = Vector2(0,0)
     var velocity : Vector2 = Vector2(0,0)
@@ -30,7 +33,7 @@ class Masspoint(val startPos : Vector2)(engine : Engine) extends drawObject:
         pos = pos + velocity
 
     def gravity : Unit =
-        addForce(Vector2(0,-g))
+        addForce(Vector2(0,g))
     
     def addForce(_force : Vector2) : Unit =
         force = force + _force

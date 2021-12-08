@@ -7,7 +7,7 @@ abstract class Engine(
   val title: String = "Softbody",
   val dim: (Int, Int) = (800, 500),
   val background: Color = Color.black,
-  var framesPerSecond: Int = 50,
+  var framesPerSecond: Int = 30,
 ):
   import introprog.PixelWindow
 

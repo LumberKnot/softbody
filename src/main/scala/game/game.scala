@@ -5,7 +5,7 @@ import utilities.Vector2
 
 object Game:
 
-    val optimalSpringLength : Double = 25
+    val optimalSpringLength : Double = 50
 
     enum State:
         case Drawing, Simulating, Quitting
@@ -40,7 +40,6 @@ class Game(dim : (Int,Int) = (800,500)
     gameLoop(stopWhen = state == Quitting)
 
     override def onKeyDown(key: String): Unit = 
-        println(s"""key "$key" pressed""")
         state match 
         case Drawing => 
             if key == "r" then 
@@ -55,6 +54,8 @@ class Game(dim : (Int,Int) = (800,500)
             if key == "Esc" then
                 println(s"Toggle pause: isPaused == $isPaused")
                 isPaused = !isPaused
+            else if key == "d" then
+                masspoints.foreach(_.debug)
             else if key == "r" then
                 println("Restarting")
                 enterDrawingState()
@@ -73,8 +74,9 @@ class Game(dim : (Int,Int) = (800,500)
             else 
                 mode match
                     case SoftbodyDrawing => 
-                        print("oh boy")
-                        createSoftbody(firstPoint , vectorPos)
+                        if masspoints.isEmpty then createSoftbody(firstPoint , vectorPos)
+                        else print(masspoints.length)
+                        firstPointSelected=false
 
 
                     case ColliderDrawing => 
@@ -114,7 +116,7 @@ class Game(dim : (Int,Int) = (800,500)
             
             //lägger till uppåtfjädrar
             if (id >= cols) then
-                springs = springs :+ Spring(Vector(masspoints(0), masspoints(id- cols)))
+                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id- cols)))
 
 
     def enterDrawingState() : Unit =
@@ -144,20 +146,21 @@ class Game(dim : (Int,Int) = (800,500)
                 
             case ColliderDrawing =>
                 if colliders.nonEmpty then
-                    println("vist en fuking member")
                     colliders = colliders.reverse.drop(1).reverse
                 
     
     override def gameLoopAction() : Unit =
-        //applicerar alla krafter som inte har med kollision att göra
-        masspoints.foreach(_.clearForce)
-        masspoints.foreach(_.gravity)
-        springs.foreach(_.applyForce)
-        masspoints.foreach(_.move)
-
-        //kolliderar med alla colliders
-        masspoints.foreach(
-            point => colliders.foreach(_.collide(point))
-        )
+        if state == Simulating && !isPaused then
+            //applicerar alla krafter som inte har med kollision att göra
+            masspoints.foreach(_.clearForce)
+            masspoints.foreach(_.gravity)
+            springs.foreach(_.applyForce)
+            
+            //kolliderar med alla colliders
+            masspoints.foreach(
+                point => colliders.foreach(_.collide(point))
+                )
+                
+            masspoints.foreach(_.move)
 
 

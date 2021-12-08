@@ -6,6 +6,8 @@ trait drawObject:
 
     def draw : Unit
 
+    def debug : Unit
+
 
     
 

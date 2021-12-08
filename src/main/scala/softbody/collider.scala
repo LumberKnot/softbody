@@ -25,6 +25,8 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
 
     override def draw : Unit = 
         engine.drawBoxWithEdges(corners._1 , corners._2 ,edgeColor, fillColor)
+
+    override def debug : Unit = ()
     
     lazy val midPoint  : Vector2 = corners._1 + ((corners._1 -> corners._2)/2)
     lazy val maxLengthSquared : Double  = ((corners._1 -> corners._2)/2).length * ((corners._1 -> corners._2)/2).length 
@@ -43,6 +45,9 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
     */
     def collide(point : Masspoint) : Unit =
         if isIn(point.pos) then
+            point.clearVerticalVelocity
+
+        /*
             //above
             if point.pos.y > midPoint.y then
                 point.clearVerticalVelocity
@@ -52,6 +57,7 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
                 point.clearVerticalVelocity
                 point.setPos(Vector2(point.pos.x , bounds(1)))
                 
+        */
 
 
 
