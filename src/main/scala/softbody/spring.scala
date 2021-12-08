@@ -10,7 +10,7 @@ object Spring:
         if (atached.length == 2) then (); new Spring(atached)(ctx)    
     //WTF varför funkar det bara med en unit där??
     
-    val k = 0.01 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
+    val k = 0.1 //hookes lag, k-> mindre soft (k-> inf är rigidbody)
 
 class Spring(val atached: Vector[Masspoint])(engine : Engine )extends drawObject:
     import Spring.*
@@ -24,7 +24,7 @@ class Spring(val atached: Vector[Masspoint])(engine : Engine )extends drawObject
     val untensionedLength = getLenght
 
     def getLenght : Double =
-        (atached(0).pos -> atached(1).pos).length
+        (atached(0).pos -> atached(1).pos).length 
 
     override def toString =
         s"Spring between ${atached(0)} , ${atached(1)} with length $untensionedLength"

@@ -5,6 +5,8 @@ import game.Engine
 
 object Masspoint:
     val g = 0.1
+    val movmentDrag = 0.7
+
     val color = java.awt.Color(153, 51, 51)
 
     def apply(startPos : Vector2)(using engine : Engine) : Masspoint = 
@@ -36,7 +38,7 @@ class Masspoint(val startPos : Vector2)(engine : Engine) extends drawObject:
         addForce(Vector2(0,g))
     
     def addForce(_force : Vector2) : Unit =
-        force = force + _force
+        if (_force.length > force.length * 0.1) then force = force + _force
     
     def clearForce : Unit =
         force = Vector2(0,0)

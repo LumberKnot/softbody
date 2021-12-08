@@ -26,7 +26,8 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
     override def draw : Unit = 
         engine.drawBoxWithEdges(corners._1 , corners._2 ,edgeColor, fillColor)
 
-    override def debug : Unit = ()
+    override def debug : Unit = 
+        println(s"Bounds at ${bounds(0)},${bounds(1)} and ${bounds(2)},${bounds(3)}")
     
     lazy val midPoint  : Vector2 = corners._1 + ((corners._1 -> corners._2)/2)
     lazy val maxLengthSquared : Double  = ((corners._1 -> corners._2)/2).length * ((corners._1 -> corners._2)/2).length 
@@ -45,19 +46,32 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
     */
     def collide(point : Masspoint) : Unit =
         if isIn(point.pos) then
-            point.clearVerticalVelocity
+            val distTop    = point.pos.y - bounds(1)
+            val distBotton = bounds(3) - point.pos.y
+            val distLeft   = point.pos.x - bounds(0)
+            val distRigh   = bounds(2) - point.pos.x
 
-        /*
-            //above
-            if point.pos.y > midPoint.y then
-                point.clearVerticalVelocity
-                point.setPos(Vector2(point.pos.x,bounds(3)))
-            //Below add if when x becomes relevant
-            else
-                point.clearVerticalVelocity
-                point.setPos(Vector2(point.pos.x , bounds(1)))
+            distTop min distBotton min distLeft min distRigh match
+
+                case dist if dist == distTop => 
+                    point.clearVerticalVelocity
+                    point.setPos(Vector2(point.pos.x,bounds(1)))
                 
-        */
+                case dist if dist == distBotton =>
+                    point.clearVerticalVelocity
+                    point.setPos(Vector2(point.pos.x , bounds(3)))
+                
+                case dist if dist == distLeft =>
+                    point.clearHorizontalVelocity
+                    point.setPos(Vector2(bounds(0), point.pos.y))
+                
+                //right by default
+                case _ =>
+                    point.clearHorizontalVelocity
+                    point.setPos(Vector2(bounds(2), point.pos.y))
+
+                
+
 
 
 

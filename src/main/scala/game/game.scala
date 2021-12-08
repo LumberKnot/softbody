@@ -55,7 +55,7 @@ class Game(dim : (Int,Int) = (800,500)
                 println(s"Toggle pause: isPaused == $isPaused")
                 isPaused = !isPaused
             else if key == "d" then
-                masspoints.foreach(_.debug)
+                drawBuffer.foreach(_.debug)
             else if key == "r" then
                 println("Restarting")
                 enterDrawingState()
