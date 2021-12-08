@@ -1,13 +1,17 @@
 package game
+
 import softbody.*
-import javax.management.modelmbean.ModelMBean
+import utilities.Vector2
 
 object Game:
+
+    val optimalSpringLength : Double = 15
+
     enum State:
         case Drawing, Simulating, Quitting
 
     enum Drawingmode:
-        case Softbody, Collider
+        case SoftbodyDrawing, ColliderDrawing
     
     export State.*, Drawingmode.*
 
@@ -15,10 +19,15 @@ class Game(dim : (Int,Int) = (800,500)
 ) extends Engine(dim = dim):
 
     import Game.*
+    
+    given Engine = this
 
     protected var state : State       = Drawing
-    protected var mode  : Drawingmode = Softbody
+    protected var mode  : Drawingmode = ColliderDrawing
     private var isPaused = false
+
+    private var firstPointSelected = false
+    private var firstPoint : Vector2 = Vector2(0,0)
 
     
     var masspoints : Vector[Masspoint]       = Vector()
@@ -34,16 +43,19 @@ class Game(dim : (Int,Int) = (800,500)
         println(s"""key "$key" pressed""")
         state match 
         case Drawing => 
-            if key == "R" then enterSimulatingState()
-            else if key == "M" then
+            if key == "r" then 
+                enterSimulatingState()
+            else if key == "m" then
                 mode = Drawingmode.fromOrdinal((mode.ordinal + 1) % 2 )
                 println(s"Changing to $mode")
+            else if key == "Backspace" then
+                deleteLast
 
         case Simulating =>
             if key == "Esc" then
                 println(s"Toggle pause: isPaused == $isPaused")
                 isPaused = !isPaused
-            else if key == "R" then
+            else if key == "r" then
                 println("Restarting")
                 enterDrawingState()
             else if key == "Backspace" then
@@ -54,10 +66,19 @@ class Game(dim : (Int,Int) = (800,500)
     
     override def onMouseDown(pos : (Int,Int)) : Unit =
         if state == Drawing then
-            mode match
-                case Softbody => ???
+            val vectorPos = Vector2(pos._1, pos._2)
+            if !firstPointSelected then
+                firstPoint = vectorPos
+                firstPointSelected=true
+            else 
+                mode match
+                    case SoftbodyDrawing => 
+                        print("oh boy")
 
-                case Collider => ???
+
+                    case ColliderDrawing => 
+                        colliders = colliders :+ Collider(firstPoint , vectorPos)
+                        firstPointSelected =false
 
 
     def enterDrawingState() : Unit =
@@ -78,6 +99,16 @@ class Game(dim : (Int,Int) = (800,500)
 
     override def draw() : Unit = 
         drawBuffer.foreach(_.draw)
+    
+    def deleteLast : Unit =
+        mode match
+            case SoftbodyDrawing => ???
+                
+            case ColliderDrawing =>
+                if colliders.nonEmpty then
+                    println("vist en fuking member")
+                    colliders = colliders.reverse.drop(1).reverse
+                
     
     override def gameLoopAction() : Unit =
         //applicerar alla krafter som inte har med kollision att göra
