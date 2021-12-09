@@ -9,7 +9,7 @@ object Collider:
     val edgeColor = java.awt.Color(0,0,51)
     val fillColor = java.awt.Color(0,0,255)
 
-    val frictionCoeficiant = 0.5
+    val frictionCoeficiant = 0.8
 
     def apply(corners : (Vector2,Vector2))(using engine : Engine) =
         new Collider(corners)(engine)
