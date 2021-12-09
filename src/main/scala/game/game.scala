@@ -30,13 +30,11 @@ class Game(dim : (Int,Int) = (800,500)
     private var firstPoint : Vector2 = Vector2(0,0)
 
     
-    var masspoints : Vector[Masspoint]       = Vector()
-    var springs    : Vector[Spring]          = Vector()
-    var colliders  : Vector[Collider]        = Vector()
+    var softbodys  : Vector[Softbody] = Vector()  
+    var colliders  : Vector[Collider] = Vector()
     
     //Not acttualy a buffer at all :)
-    def drawBuffer : Vector[drawObject] = springs ++ colliders
-    //masspoints ++ 
+    def drawBuffer : Vector[drawObject] = softbodys ++ colliders
     
     gameLoop(stopWhen = state == Quitting)
 
@@ -75,58 +73,13 @@ class Game(dim : (Int,Int) = (800,500)
             else 
                 mode match
                     case SoftbodyDrawing => 
-                        if masspoints.isEmpty then createSoftbody(firstPoint , vectorPos)
-                        else print(masspoints.length)
+                        softbodys = softbodys :+ Softbody(firstPoint , vectorPos)
                         firstPointSelected=false
 
 
                     case ColliderDrawing => 
                         colliders = colliders :+ Collider(firstPoint , vectorPos)
-                        firstPointSelected =false
-
-
-    /**Generates a softbody if and only if there exists none*/
-    def createSoftbody(first : Vector2 , second : Vector2) : Unit = 
-        //rita ett nät på papper
-
-        /**x_min, y_min, x_max,  y_max */
-        val bounds : Vector[Double] = Vector(
-            first.x min second.x,
-            first.y min second.y,
-            first.x max second.x,
-            first.y max second.y)
-        
-        val start : Vector2 = Vector2(bounds(0), bounds(1))
-        val end : Vector2 = Vector2(bounds(2), bounds(3))
-        
-        val cols : Int = ((bounds(2) - bounds(0))/optimalSpringLength).round.toInt
-        val rows : Int = ((bounds(3) - bounds(1))/optimalSpringLength).round.toInt
-
-        val horizontalChange : Vector2 = Vector2((bounds(2) - bounds(0))/cols,0)
-        val verticalChange   : Vector2 = Vector2(0,(bounds(3) - bounds(1))/rows)
-
-        for (id <- 0 to (rows*cols)-1) do
-            //lägger till en masspoint
-            masspoints = masspoints :+ Masspoint(first 
-            + (id % cols) *: horizontalChange + math.floor(id/cols) *: verticalChange
-            )
-
-            //lägger till sido fjädrar
-            if (id % cols != 0) then
-                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id-1)))
-            
-            //lägger till uppåtfjädrar
-            if (id >= cols) then
-                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id- cols)))
-            
-            //lägger till snea fjädrar <- 
-            if (id >= cols +1 && id % cols != 0) then
-                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id-cols -1)))
-            
-            //läger till snea fjädrar ->
-            if(id >= cols && (id + 1)% cols != 0) then
-                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id-cols + 1)))
-
+                        firstPointSelected =false  
 
 
     def enterDrawingState() : Unit =
@@ -150,49 +103,23 @@ class Game(dim : (Int,Int) = (800,500)
     def deleteLast : Unit =
         mode match
             case SoftbodyDrawing =>
-                if(masspoints.nonEmpty) then 
-                    bufferClearAreas += getBorders() 
-                    masspoints = Vector()
-                    springs    = Vector()
+                if(softbodys.nonEmpty) then 
+                    bufferClearAreas += softbodys.last.getBoundingBox()
+                    softbodys = softbodys.take(softbodys.length - 1)
                 
             case ColliderDrawing =>
                 if colliders.nonEmpty then
-                    bufferClearAreas += colliders.reverse.take(1)(0).getVectorBounds()
-                    colliders = colliders.reverse.drop(1).reverse
+                    bufferClearAreas += colliders.last.getVectorBounds()
+                    colliders = colliders.take(colliders.length-1)
                 
     
-    /**Returns two vectors representing the boundingbox of the softbody*/
-    def getBorders() : (Vector2, Vector2) =
-        var x_min = masspoints(0).pos.x
-        var x_max = masspoints(0).pos.x
-        var y_min = masspoints(0).pos.y
-        var y_max = masspoints(0).pos.y
-
-        masspoints.drop(1).foreach(point =>
-            
-            if point.pos.x < x_min then x_min = point.pos.x
-            if point.pos.x > x_max then x_max = point.pos.x
-            if point.pos.y < y_min then y_min = point.pos.x
-            if point.pos.y > y_max then y_max = point.pos.x
-            )
-
-        (Vector2(x_min,y_min) , Vector2(x_max,y_max))
-
 
     override def gameLoopAction() : Unit =
         if state == Simulating && !isPaused then
-            //applicerar alla krafter som inte har med kollision att göra
-            masspoints.foreach(_.clearForce)
-            masspoints.foreach(_.gravity)
-            springs.foreach(_.applyForce)
-            
-            //kolliderar med alla colliders
-            masspoints.foreach(
-                point => colliders.foreach(_.collide(point))
-                )
-                
-            masspoints.foreach(_.move)
-            
-            //if(masspoints.nonEmpty) then bufferClearAreas += getBorders()
 
+            softbodys.foreach(_.forces)
+            softbodys.foreach(_.collisions(colliders))
+            softbodys.foreach(_.move)
+
+            softbodys.foreach(bufferClearAreas += _.getBoundingBox())
 

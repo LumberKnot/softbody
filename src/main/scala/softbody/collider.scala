@@ -6,8 +6,8 @@ import game.Engine
 
 /**Companionsobj*/
 object Collider:
-    val edgeColor = java.awt.Color(0,51,0)
-    val fillColor = java.awt.Color(0,255,0)
+    val edgeColor = java.awt.Color(0,0,51)
+    val fillColor = java.awt.Color(0,0,255)
 
     def apply(corners : (Vector2,Vector2))(using engine : Engine) =
         new Collider(corners)(engine)
@@ -29,7 +29,7 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
 
     override def draw : Unit = 
         engine.drawBoxWithEdges(corners._1 , corners._2 ,edgeColor, fillColor)
-
+        
     override def debug : Unit = 
         println(s"Bounds at ${bounds(0)},${bounds(1)} and ${bounds(2)},${bounds(3)}")
     

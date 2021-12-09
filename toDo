@@ -6,6 +6,7 @@ friction
 
 #For better performance
 Clear Area
+    showBoundingbox
 
 #For better code
 class softbody

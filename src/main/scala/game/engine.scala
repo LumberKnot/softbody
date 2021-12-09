@@ -82,10 +82,8 @@ abstract class Engine(
           case _ =>
         pixelWindow.awaitEvent(1)
 
-      //bufferClearAreas.foreach((start , end) => clearArea(start, end))
-      //bufferClearAreas.clear
-
-      pixelWindow.clear()
+      bufferClearAreas.foreach((start , end) => clearArea(start, end))
+      bufferClearAreas.clear
       draw()
       gameLoopAction()
 
@@ -110,12 +108,14 @@ abstract class Engine(
       color = fillColor
     )
 
+    drawEdges(a, b , edgeColor)
+
+  def drawEdges (a : Vector2, b : Vector2 , edgeColor : java.awt.Color) : Unit =
     pixelWindow.line(a.x.toInt , a.y.toInt , b.x.toInt , a.y.toInt , edgeColor,5)
     pixelWindow.line(a.x.toInt , a.y.toInt , a.x.toInt , b.y.toInt , edgeColor,5)
 
     pixelWindow.line(b.x.toInt , b.y.toInt , b.x.toInt , a.y.toInt , edgeColor,5)
     pixelWindow.line(b.x.toInt , b.y.toInt , a.x.toInt , b.y.toInt , edgeColor,5)
-
 
   
   /**Draws a square atm
@@ -125,6 +125,6 @@ abstract class Engine(
   def drawDot(pos : Vector2 , color : java.awt.Color, size : Int = 10) =
     pixelWindow.fill((pos.x - size/2).toInt , (pos.y -size/2).toInt , size , size , color)
     
-  
+  val margins = 15
   def clearArea(start : Vector2 , end : Vector2) : Unit =
-    pixelWindow.fill(start.x.toInt , start.y.toInt , (end.x - start.x).toInt, (end.y - start.y).toInt , background)
+    pixelWindow.fill(start.x.toInt -margins , start.y.toInt -margins , (end.x - start.x).toInt + 2* margins, (end.y - start.y).toInt + 2* margins , background)
