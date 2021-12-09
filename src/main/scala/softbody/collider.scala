@@ -9,6 +9,8 @@ object Collider:
     val edgeColor = java.awt.Color(0,0,51)
     val fillColor = java.awt.Color(0,0,255)
 
+    val frictionCoeficiant = 0.5
+
     def apply(corners : (Vector2,Vector2))(using engine : Engine) =
         new Collider(corners)(engine)
 
@@ -50,6 +52,10 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
     */
     def collide(point : Masspoint) : Unit =
         if isIn(point.pos) then
+
+            //slows down either way
+            point.velocity = point.velocity * frictionCoeficiant
+
             val distTop    = point.pos.y - bounds(1)
             val distBotton = bounds(3) - point.pos.y
             val distLeft   = point.pos.x - bounds(0)
