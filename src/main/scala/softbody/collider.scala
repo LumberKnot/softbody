@@ -22,6 +22,10 @@ class Collider(corners : (Vector2,Vector2))(engine : Engine) extends drawObject:
         corners._1.y min corners._2.y,
         corners._1.x max corners._2.x,
         corners._1.y max corners._2.y)
+    
+    def getVectorBounds() : (Vector2,Vector2) =
+        (Vector2(bounds(0),bounds(1)), Vector2(bounds(2),bounds(3)))
+
 
     override def draw : Unit = 
         engine.drawBoxWithEdges(corners._1 , corners._2 ,edgeColor, fillColor)

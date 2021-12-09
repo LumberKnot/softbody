@@ -35,7 +35,8 @@ class Game(dim : (Int,Int) = (800,500)
     var colliders  : Vector[Collider]        = Vector()
     
     //Not acttualy a buffer at all :)
-    def drawBuffer : Vector[drawObject] = masspoints ++ springs ++ colliders
+    def drawBuffer : Vector[drawObject] = springs ++ colliders
+    //masspoints ++ 
     
     gameLoop(stopWhen = state == Quitting)
 
@@ -139,7 +140,6 @@ class Game(dim : (Int,Int) = (800,500)
         pixelWindow.hide()
         state = Quitting
     
-    
     override def onClose(): Unit = 
         println("Window Closed!")
         enterQuittingState()
@@ -149,15 +149,36 @@ class Game(dim : (Int,Int) = (800,500)
     
     def deleteLast : Unit =
         mode match
-            case SoftbodyDrawing => 
-                masspoints = Vector()
-                springs    = Vector()
+            case SoftbodyDrawing =>
+                if(masspoints.nonEmpty) then 
+                    bufferClearAreas += getBorders() 
+                    masspoints = Vector()
+                    springs    = Vector()
                 
             case ColliderDrawing =>
                 if colliders.nonEmpty then
+                    bufferClearAreas += colliders.reverse.take(1)(0).getVectorBounds()
                     colliders = colliders.reverse.drop(1).reverse
                 
     
+    /**Returns two vectors representing the boundingbox of the softbody*/
+    def getBorders() : (Vector2, Vector2) =
+        var x_min = masspoints(0).pos.x
+        var x_max = masspoints(0).pos.x
+        var y_min = masspoints(0).pos.y
+        var y_max = masspoints(0).pos.y
+
+        masspoints.drop(1).foreach(point =>
+            
+            if point.pos.x < x_min then x_min = point.pos.x
+            if point.pos.x > x_max then x_max = point.pos.x
+            if point.pos.y < y_min then y_min = point.pos.x
+            if point.pos.y > y_max then y_max = point.pos.x
+            )
+
+        (Vector2(x_min,y_min) , Vector2(x_max,y_max))
+
+
     override def gameLoopAction() : Unit =
         if state == Simulating && !isPaused then
             //applicerar alla krafter som inte har med kollision att göra
@@ -171,5 +192,7 @@ class Game(dim : (Int,Int) = (800,500)
                 )
                 
             masspoints.foreach(_.move)
+            
+            //if(masspoints.nonEmpty) then bufferClearAreas += getBorders()
 
 

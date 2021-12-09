@@ -2,6 +2,7 @@ package game
 
 import java.awt.Color
 import utilities.Vector2
+import scala.collection.mutable.ArrayBuffer
 
 abstract class Engine(
   val title: String = "Softbody",
@@ -61,6 +62,8 @@ abstract class Engine(
     /** Max time for awaiting events from underlying window in ms. */
   protected val MaxWaitForEventMillis = 1
 
+  protected val bufferClearAreas : ArrayBuffer[(Vector2,Vector2)] = ArrayBuffer()
+
   /** The game loop that continues while not `stopWhen` is true.
     * It calls each `onXXX` method if a corresponding event is detected.
     */
@@ -78,9 +81,14 @@ abstract class Engine(
           case Event.MouseReleased => onMouseUp(pixelWindow.lastMousePos)
           case _ =>
         pixelWindow.awaitEvent(1)
+
+      //bufferClearAreas.foreach((start , end) => clearArea(start, end))
+      //bufferClearAreas.clear
+
       pixelWindow.clear()
       draw()
       gameLoopAction()
+
       val elapsed = System.currentTimeMillis - t0
       if (gameLoopDelayMillis - elapsed) < MaxWaitForEventMillis then
         onFrameTimeOverrun(elapsed)
@@ -116,3 +124,7 @@ abstract class Engine(
   */
   def drawDot(pos : Vector2 , color : java.awt.Color, size : Int = 10) =
     pixelWindow.fill((pos.x - size/2).toInt , (pos.y -size/2).toInt , size , size , color)
+    
+  
+  def clearArea(start : Vector2 , end : Vector2) : Unit =
+    pixelWindow.fill(start.x.toInt , start.y.toInt , (end.x - start.x).toInt, (end.y - start.y).toInt , background)
