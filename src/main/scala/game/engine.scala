@@ -82,8 +82,9 @@ abstract class Engine(
           case _ =>
         pixelWindow.awaitEvent(1)
 
-      bufferClearAreas.foreach((start , end) => clearArea(start, end))
+      //bufferClearAreas.foreach((start , end) => clearArea(start, end))
       bufferClearAreas.clear
+      pixelWindow.clear()
       draw()
       gameLoopAction()
 

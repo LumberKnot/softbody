@@ -24,7 +24,8 @@ object Softbody:
             first.x min second.x,
             first.y min second.y,
             first.x max second.x,
-            first.y max second.y)
+            first.y max second.y
+            )
         
         val start : Vector2 = Vector2(bounds(0), bounds(1))
         val end : Vector2 = Vector2(bounds(2), bounds(3))
