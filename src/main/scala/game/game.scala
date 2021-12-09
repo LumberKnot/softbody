@@ -117,6 +117,15 @@ class Game(dim : (Int,Int) = (800,500)
             //lägger till uppåtfjädrar
             if (id >= cols) then
                 springs = springs :+ Spring(Vector(masspoints(id), masspoints(id- cols)))
+            
+            //lägger till snea fjädrar <- 
+            if (id >= cols +1 && id % cols != 0) then
+                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id-cols -1)))
+            
+            //läger till snea fjädrar ->
+            if(id >= cols && (id + 1)% cols != 0) then
+                springs = springs :+ Spring(Vector(masspoints(id), masspoints(id-cols + 1)))
+
 
 
     def enterDrawingState() : Unit =
